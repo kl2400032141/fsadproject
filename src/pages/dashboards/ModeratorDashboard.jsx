@@ -1,83 +1,132 @@
-import React from 'react';
-import { useApp } from '../../context/AppContext';
-import { StatCard } from '../../components/StatCard';
-import { CheckSquare, AlertCircle, MessageSquare, ShieldAlert, CheckCircle2, XCircle } from 'lucide-react';
+import React from "react";
+import { useApp } from "../../context/AppContext";
+import { StatCard } from "../../components/StatCard";
+import {
+  CheckSquare,
+  AlertCircle,
+  MessageSquare,
+  ShieldAlert,
+} from "lucide-react";
 
 export const ModeratorDashboard = () => {
   const { issues, projects } = useApp();
 
+  const pendingProjects = projects.filter(
+    (p) => p.status === "Proposed"
+  );
+
   const stats = [
-    { title: 'Pending Approvals', value: projects.filter(p => p.status === 'Proposed').length, icon: CheckSquare },
-    { title: 'Reported Issues', value: issues.length, icon: AlertCircle },
-    { title: 'Active Monitoring', value: issues.filter(i => i.status === 'In Progress').length, icon: MessageSquare },
-    { title: 'Safety Alerts', value: 0, icon: ShieldAlert },
+    {
+      title: "Pending Approvals",
+      value: pendingProjects.length,
+      icon: CheckSquare,
+    },
+    {
+      title: "Reported Issues",
+      value: issues.length,
+      icon: AlertCircle,
+    },
+    {
+      title: "Active Monitoring",
+      value: issues.filter(
+        (i) => i.status === "In Progress"
+      ).length,
+      icon: MessageSquare,
+    },
+    {
+      title: "Safety Alerts",
+      value: 0,
+      icon: ShieldAlert,
+    },
   ];
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Moderator Control</h1>
-        <p className="text-slate-500">Review projects, monitor content, and ensure platform integrity.</p>
-      </div>
+    <div
+      className="min-h-screen bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1600&q=80')",
+      }}
+    >
+      <div className="min-h-screen bg-slate-950/75 backdrop-blur-sm p-6 md:p-8">
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, idx) => (
-          <StatCard key={idx} {...stat} />
-        ))}
-      </div>
+        {/* Header */}
+        <div className="bg-white/95 rounded-3xl shadow-2xl p-6 md:p-8 mb-8">
+          <p className="text-blue-600 font-semibold mb-2">
+            Moderator Portal
+          </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Project Approval Queue</h3>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+            Moderator Control
+          </h1>
+
+          <p className="text-slate-500 mt-2">
+            Monitor issues and maintain platform integrity.
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, idx) => (
+            <div
+              key={idx}
+              className="bg-white/95 rounded-3xl shadow-xl p-2"
+            >
+              <StatCard {...stat} />
+            </div>
+          ))}
+        </div>
+
+        {/* Issues Section */}
+        <div className="bg-white/95 rounded-3xl shadow-2xl p-6">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-slate-900">
+              Current Issues
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-1">
+              Current reported issues by citizens.
+            </p>
+          </div>
+
           <div className="space-y-4">
-            {projects.filter(p => p.status === 'Proposed').map((project) => (
-              <div key={project.id} className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h4 className="font-bold text-slate-900">{project.title}</h4>
-                    <p className="text-xs text-slate-500">Proposed by {project.politicianName}</p>
-                  </div>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full uppercase">
-                    {project.priority} Priority
-                  </span>
-                </div>
-                <p className="text-sm text-slate-600 line-clamp-2 mb-4">{project.description}</p>
+            {issues.slice(0, 8).map((issue) => (
+              <div
+                key={issue.id}
+                className="p-5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-md transition-all"
+              >
                 <div className="flex gap-3">
-                  <button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all">
-                    <CheckCircle2 className="w-4 h-4" /> Approve
-                  </button>
-                  <button className="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all">
-                    <XCircle className="w-4 h-4" /> Reject
-                  </button>
+                  <div className="w-3 h-3 rounded-full bg-blue-500 mt-2"></div>
+
+                  <div>
+                    <p className="font-semibold text-slate-900">
+                      {issue.title}
+                    </p>
+
+                    <p className="text-sm text-slate-500 mt-1">
+                      {issue.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
-            {projects.filter(p => p.status === 'Proposed').length === 0 && (
+
+            {issues.length === 0 && (
               <div className="text-center py-12">
-                <CheckCircle2 className="w-12 h-12 text-emerald-200 mx-auto mb-3" />
-                <p className="text-slate-400">No projects pending approval.</p>
+                <AlertCircle className="w-14 h-14 text-slate-300 mx-auto mb-4" />
+
+                <h4 className="text-lg font-bold text-slate-800">
+                  No Reports Found
+                </h4>
+
+                <p className="text-slate-400 text-sm mt-1">
+                  No citizen issues available right now.
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-900 mb-6">Content Monitoring</h3>
-          <div className="space-y-4">
-            {issues.slice(0, 5).map((issue) => (
-              <div key={issue.id} className="p-4 border border-slate-100 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900">{issue.title}</p>
-                    <p className="text-xs text-slate-400">By {issue.citizenName}</p>
-                  </div>
-                </div>
-                <button className="text-xs font-bold text-slate-400 hover:text-rose-500 transition-colors">Flag</button>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

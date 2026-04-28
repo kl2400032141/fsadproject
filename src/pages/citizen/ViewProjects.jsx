@@ -1,151 +1,262 @@
-import React from 'react';
-import { useApp } from '../../context/AppContext';
-import { ClipboardList, Wallet, Calendar } from 'lucide-react';
+import React, { useState } from "react";
+import { useApp } from "../../context/AppContext";
+import {
+  ClipboardList,
+  Wallet,
+  Calendar,
+  ArrowRight,
+  Building2,
+  X,
+} from "lucide-react";
 
 export const ViewProjects = () => {
   const { projects } = useApp();
 
-  // ✅ Safe fallback
-  const safeProjects = Array.isArray(projects) ? projects : [];
+  const safeProjects = Array.isArray(projects)
+    ? projects
+    : [];
+
+  const [selectedProject, setSelectedProject] =
+    useState(null);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">
-          Constituency Projects
-        </h1>
-        <p className="text-slate-500">
-          Overview of all development initiatives in your area.
-        </p>
-      </div>
+    <div
+      className="min-h-screen bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80')",
+      }}
+    >
+      <div className="min-h-screen bg-slate-950/75 backdrop-blur-sm p-6 md:p-8">
 
-      {/* Empty State */}
-      {safeProjects.length === 0 ? (
-        <p className="text-slate-500">No projects available</p>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {safeProjects.map((project) => {
-            // ✅ Safe calculations
-            const budget = project?.budget || 0;
-            const allocated = project?.allocatedBudget || 0;
-            const progress = budget > 0 ? (allocated / budget) * 100 : 0;
+        {/* Header */}
+        <div className="bg-white/95 rounded-3xl shadow-2xl p-6 md:p-8 mb-8">
+          <p className="text-blue-600 font-semibold mb-2">
+            Citizen Portal
+          </p>
 
-            return (
-              <div
-                key={project?.id}
-                className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm"
-              >
-                {/* Top Section */}
-                <div className="flex justify-between items-start mb-6">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`p-2 rounded-xl ${
-                        project?.status === 'Completed'
-                          ? 'bg-emerald-50 text-emerald-600'
-                          : project?.status === 'In Progress'
-                          ? 'bg-blue-50 text-blue-600'
-                          : 'bg-slate-50 text-slate-600'
-                      }`}
-                    >
-                      <ClipboardList className="w-6 h-6" />
-                    </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+            Constituency Projects
+          </h1>
+
+          <p className="text-slate-500 mt-2">
+            Explore all development initiatives happening in your locality.
+          </p>
+        </div>
+
+        {/* Empty */}
+        {safeProjects.length === 0 ? (
+          <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
+            <Building2 className="w-14 h-14 text-slate-300 mx-auto mb-4" />
+
+            <h3 className="text-xl font-bold text-slate-800 mb-2">
+              No Projects Available
+            </h3>
+
+            <p className="text-slate-500">
+              Development projects will appear here once initiated.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {safeProjects.map((project) => {
+              const budget =
+                project?.budget || 0;
+
+              const allocated =
+                project?.allocatedBudget || 0;
+
+              const progress =
+                budget > 0
+                  ? (allocated / budget) * 100
+                  : 0;
+
+              return (
+                <div
+                  key={project.id}
+                  className="bg-white rounded-3xl shadow-2xl p-6"
+                >
+                  {/* Top */}
+                  <div className="flex justify-between mb-5">
+
                     <div>
-                      <h3 className="font-bold text-slate-900">
-                        {project?.title || 'Untitled'}
+                      <h3 className="text-xl font-bold text-slate-900">
+                        {project.title}
                       </h3>
-                      <p className="text-xs text-slate-500">
-                        ID: {project?.id?.toUpperCase() || 'N/A'}
+
+                      <p className="text-sm text-slate-500">
+                        ID: {project.id}
                       </p>
+                    </div>
+
+                   <span
+  className={`inline-flex items-center justify-center min-w-[120px] px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap ${
+    project?.status === "Completed"
+      ? "bg-emerald-100 text-emerald-700"
+      : project?.status === "In Progress"
+      ? "bg-blue-100 text-blue-700"
+      : project?.status === "Proposed"
+      ? "bg-amber-100 text-amber-700"
+      : "bg-rose-100 text-rose-700"
+  }`}
+>
+  {project?.status}
+</span>
+
+                  </div>
+
+                  {/* Desc */}
+                  <p className="text-slate-600 mb-5">
+                    {project.description}
+                  </p>
+
+                  {/* Progress */}
+                  <div className="mb-5">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>
+                        Progress
+                      </span>
+
+                      <span className="font-bold text-blue-600">
+                        {Math.round(
+                          progress
+                        )}
+                        %
+                      </span>
+                    </div>
+
+                    <div className="w-full h-2 bg-slate-200 rounded-full">
+                      <div
+                        className="h-2 bg-blue-600 rounded-full"
+                        style={{
+                          width: `${progress}%`,
+                        }}
+                      ></div>
                     </div>
                   </div>
 
-                  <span
-                    className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      project?.status === 'Completed'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : project?.status === 'In Progress'
-                        ? 'bg-blue-100 text-blue-700'
-                        : project?.status === 'Proposed'
-                        ? 'bg-amber-100 text-amber-700'
-                        : 'bg-rose-100 text-rose-700'
-                    }`}
-                  >
-                    {project?.status || 'Unknown'}
+                  {/* Footer */}
+                  <div className="flex justify-between items-center">
+
+                    <p className="text-sm text-slate-500">
+                      ₹
+                      {budget.toLocaleString()}
+                    </p>
+
+                    <button
+                      onClick={() =>
+                        setSelectedProject(
+                          project
+                        )
+                      }
+                      className="text-blue-600 font-semibold flex items-center gap-1 hover:underline"
+                    >
+                      Details
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+
+                  </div>
+                </div>
+              );
+            })}
+
+          </div>
+        )}
+
+        {/* Popup Modal */}
+        {selectedProject && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+
+            <div className="bg-white max-w-lg w-full rounded-3xl shadow-2xl p-7 relative">
+
+              {/* Close */}
+              <button
+                onClick={() =>
+                  setSelectedProject(
+                    null
+                  )
+                }
+                className="absolute top-4 right-4 text-slate-500 hover:text-red-500"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                {selectedProject.title}
+              </h2>
+
+              <p className="text-slate-600 mb-5">
+                {
+                  selectedProject.description
+                }
+              </p>
+
+              <div className="space-y-3 text-sm">
+
+                <div className="flex justify-between">
+                  <span className="text-slate-500">
+                    Project ID
+                  </span>
+                  <span className="font-semibold">
+                    {
+                      selectedProject.id
+                    }
                   </span>
                 </div>
 
-                {/* Description */}
-                <p className="text-sm text-slate-600 mb-6 line-clamp-2">
-                  {project?.description || 'No description available'}
-                </p>
-
-                {/* Budget + Date */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="flex items-center gap-2 text-slate-400 mb-1">
-                      <Wallet className="w-3 h-3" />
-                      <span className="text-[10px] font-bold uppercase">
-                        Budget
-                      </span>
-                    </div>
-                    <p className="text-sm font-bold text-slate-900">
-                      ₹{budget.toLocaleString()}
-                    </p>
-                  </div>
-
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="flex items-center gap-2 text-slate-400 mb-1">
-                      <Calendar className="w-3 h-3" />
-                      <span className="text-[10px] font-bold uppercase">
-                        Started
-                      </span>
-                    </div>
-                    <p className="text-sm font-bold text-slate-900">
-                      {project?.createdAt || 'N/A'}
-                    </p>
-                  </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">
+                    Budget
+                  </span>
+                  <span className="font-semibold">
+                    ₹
+                    {selectedProject.budget.toLocaleString()}
+                  </span>
                 </div>
 
-                {/* Progress */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-400 uppercase">
-                      Allocation Progress
-                    </span>
-                    <span className="text-xs font-bold text-blue-600">
-                      {Math.round(progress)}%
-                    </span>
-                  </div>
-
-                  <div className="w-full bg-slate-100 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${progress}%` }}
-                    ></div>
-                  </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">
+                    Allocated
+                  </span>
+                  <span className="font-semibold">
+                    ₹
+                    {(
+                      selectedProject.allocatedBudget ||
+                      0
+                    ).toLocaleString()}
+                  </span>
                 </div>
 
-                {/* Footer */}
-                <div className="mt-6 pt-6 border-t border-slate-100 flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
-                      {project?.politicianName?.charAt(0) || '?'}
-                    </div>
-                    <span className="text-xs text-slate-500 font-medium">
-                      {project?.politicianName || 'Unknown'}
-                    </span>
-                  </div>
-
-                  <button className="text-xs font-bold text-blue-600 hover:underline">
-                    View Details
-                  </button>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">
+                    Status
+                  </span>
+                  <span className="font-semibold text-blue-600">
+                    {
+                      selectedProject.status
+                    }
+                  </span>
                 </div>
+
+                
+
+                <div className="flex justify-between">
+                  <span className="text-slate-500">
+                    Started
+                  </span>
+                  <span className="font-semibold">
+                    {selectedProject.createdAt}
+                  </span>
+                </div>
+
               </div>
-            );
-          })}
-        </div>
-      )}
+
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 };
