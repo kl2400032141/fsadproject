@@ -18,31 +18,94 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const res = await API.post("/login", {
-        email,
-        password,
-      });
+  /* Manual Fixed Logins */
 
-      const user = res.data;
+  // Citizen
+  if (
+    email === "vidyajagabattula@gmail.com" &&
+    password === "1234"
+  ) {
+    const user = {
+      email,
+      role: "CITIZEN",
+    };
 
-      localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/dashboard/citizen");
+    return;
+  }
 
-      const dashboardMap = {
-        ADMIN: "/dashboard/admin",
-        CITIZEN: "/dashboard/citizen",
-        POLITICIAN: "/dashboard/politician",
-        MODERATOR: "/dashboard/moderator",
-      };
+  // Politician
+  if (
+    email === "thotadeepamrutha@gmail.com" &&
+    password === "1234"
+  ) {
+    const user = {
+      email,
+      role: "POLITICIAN",
+    };
 
-      navigate(dashboardMap[user.role] || "/");
-    } catch (err) {
-      console.error(err);
-      alert("Login failed ❌");
-    }
-  };
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/dashboard/politician");
+    return;
+  }
+
+  // Moderator
+  if (
+    email === "2400032141@kluniversity.in" &&
+    password === "1234"
+  ) {
+    const user = {
+      email,
+      role: "MODERATOR",
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/dashboard/moderator");
+    return;
+  }
+
+  // Admin
+  if (
+    email === "2400031965@kluniversity.in" &&
+    password === "1234"
+  ) {
+    const user = {
+      email,
+      role: "ADMIN",
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    navigate("/dashboard/admin");
+    return;
+  }
+
+  /* Existing Backend Login Logic */
+  try {
+    const res = await API.post("/login", {
+      email,
+      password,
+    });
+
+    const user = res.data;
+
+    localStorage.setItem("user", JSON.stringify(user));
+
+    const dashboardMap = {
+      ADMIN: "/dashboard/admin",
+      CITIZEN: "/dashboard/citizen",
+      POLITICIAN: "/dashboard/politician",
+      MODERATOR: "/dashboard/moderator",
+    };
+
+    navigate(dashboardMap[user.role] || "/");
+  } catch (err) {
+    console.error(err);
+    alert("Login failed ❌");
+  }
+};
 
   return (
     <div
@@ -52,12 +115,9 @@ export const Login = () => {
           "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1600&q=80')",
       }}
     >
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
 
-      {/* Content */}
       <div className="relative z-10 grid lg:grid-cols-2 gap-10 max-w-6xl w-full items-center">
-        {/* Left Section */}
         <div className="hidden lg:block text-white">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 mb-6 shadow-xl">
             <ShieldCheck className="w-8 h-8" />
@@ -73,21 +133,8 @@ export const Login = () => {
             leaders to solve issues, manage projects and build better
             communities.
           </p>
-
-          <div className="mt-8 grid grid-cols-2 gap-4 max-w-md">
-            <div className="bg-white/10 border border-white/10 rounded-2xl p-4">
-              <h3 className="text-2xl font-bold">24/7</h3>
-              <p className="text-sm text-slate-300">Issue Tracking</p>
-            </div>
-
-            <div className="bg-white/10 border border-white/10 rounded-2xl p-4">
-              <h3 className="text-2xl font-bold">100%</h3>
-              <p className="text-sm text-slate-300">Transparency</p>
-            </div>
-          </div>
         </div>
 
-        {/* Login Card */}
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/30">
             <div className="text-center mb-8">
@@ -105,7 +152,6 @@ export const Login = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Email */}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Email Address
@@ -125,7 +171,6 @@ export const Login = () => {
                 </div>
               </div>
 
-              {/* Password */}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Password
@@ -157,27 +202,15 @@ export const Login = () => {
                 </div>
               </div>
 
-              {/* Forgot Password */}
-              <div className="text-right">
-                <button
-                  type="button"
-                  className="text-sm text-blue-600 font-medium hover:underline"
-                >
-                  Forgot Password?
-                </button>
-              </div>
-
-              {/* Button */}
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-blue-300"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg"
               >
                 Sign In
                 <ChevronRight className="w-5 h-5" />
               </button>
             </form>
 
-            {/* Register */}
             <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
                 Don't have an account?{" "}
